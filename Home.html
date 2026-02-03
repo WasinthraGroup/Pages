@@ -15,31 +15,54 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <a href="#" onclick="navigateTo('home')">WASINTRA<span>.</span></a>
+                <a href="#/home">WASINTRA<span>.</span></a>
             </div>
+            
+            <!-- Desktop Menu -->
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="#" class="nav-link" onclick="navigateTo('home')">หน้าหลัก</a></li>
-                    <li><a href="#" class="nav-link" onclick="navigateTo('about')">เกี่ยวกับเรา</a></li>
-                    <li><a href="#" class="nav-link" onclick="navigateTo('portfolio')">ผลงาน</a></li>
-                    <li><a href="#" class="nav-link" onclick="navigateTo('team')">บุคลากร</a></li>
+                    <li><a href="#/home" class="nav-link">หน้าหลัก</a></li>
+                    <li><a href="#/about" class="nav-link">เกี่ยวกับเรา</a></li>
+                    <li><a href="#/portfolio" class="nav-link">ผลงาน</a></li>
+                    <li><a href="#/team" class="nav-link">บุคลากร</a></li>
                 </ul>
             </nav>
-            <div class="mobile-toggle">☰</div>
+
+            <!-- Mobile Toggle Button -->
+            <div class="mobile-toggle" id="mobile-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
+
+    <!-- Mobile Side Menu -->
+    <div class="mobile-nav-overlay" id="nav-overlay"></div>
+    <div class="mobile-side-nav" id="side-nav">
+        <div class="side-nav-header">
+            <div class="logo">WASINTRA<span>.</span></div>
+            <div class="close-btn" id="close-btn">&times;</div>
+        </div>
+        <ul class="mobile-menu-links">
+            <li><a href="#/home">หน้าหลัก</a></li>
+            <li><a href="#/about">เกี่ยวกับเรา</a></li>
+            <li><a href="#/portfolio">ผลงาน</a></li>
+            <li><a href="#/team">บุคลากร</a></li>
+        </ul>
+    </div>
 
     <!-- Page Content -->
     <main>
         <!-- HOME PAGE -->
-        <section id="home" class="page-section active">
+        <section id="home" class="page-section">
             <div class="hero-content">
                 <span class="sub-title">Digital Craftsmanship</span>
                 <h1 class="main-title">เชื่อมต่ออดีต <br>สู่โลกอนาคต</h1>
                 <p class="hero-desc">วศินทราพัฒนาโลกเสมือนจริงที่รักษาเอกลักษณ์ความเป็นไทย ด้วยนวัตกรรมสมัยใหม่ที่เข้าถึงง่ายและยั่งยืน</p>
                 <div class="hero-actions">
-                    <button class="btn btn-primary" onclick="navigateTo('portfolio')">ชมผลงาน</button>
-                    <button class="btn btn-outline" onclick="navigateTo('about')">รู้จักเรา</button>
+                    <a href="#/portfolio" class="btn btn-primary">ชมผลงาน</a>
+                    <a href="#/about" class="btn btn-outline">รู้จักเรา</a>
                 </div>
             </div>
             
@@ -69,7 +92,7 @@
                 <h2 class="section-heading">เกี่ยวกับเรา</h2>
                 <div class="about-content">
                     <p class="lead">เราคือกลุ่มนักพัฒนาที่เชื่อว่า "ความเป็นไทย" สามารถเติบโตไปพร้อมกับเทคโนโลยีระดับโลกได้</p>
-                    <p>วศินทรา (Wasintra) ก่อตั้งขึ้นจากความหลงใหลในศิลปวัฒนธรรมไทย และความต้องการที่จะบันทึกมรดกเหล่านี้ไว้ในโลกดิจิทัล เราไม่ได้เพียงแค่สร้างภาพกราฟิก แต่เราสร้าง "ประสบการณ์" ที่จะทำให้ผู้ใช้งานรู้สึกถึงความภาคภูมิใจในรากเหง้าของตนเอง</p>
+                    <p>วศินทรา (Wasintra) ก่อตั้งขึ้นจากความหลงใหลในศิลปวัฒนธรรมไทย และความต้องการที่จะบันทึกมรดกเหล่านี้ไว้ในโลกดิจิทัล</p>
                     <blockquote class="thai-quote">
                         "เป้าหมายของเราคือการเป็นสะพานเชื่อมระหว่างคนรุ่นเก่าและคนรุ่นใหม่ ผ่านพื้นที่เสมือนจริง"
                     </blockquote>
@@ -132,28 +155,61 @@
             <div class="footer-links">
                 <a href="#">FB</a>
                 <a href="#">IG</a>
-                <a href="#">Contact</a>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript for Navigation -->
     <script>
-        function navigateTo(pageId) {
-            // Remove active class from all sections
+        // --- Navigation & Redirect Logic ---
+        function router() {
+            const path = window.location.hash.slice(2) || 'home';
+            const validPaths = ['home', 'about', 'portfolio', 'team'];
+            
+            // Redirect to /home if path is empty or invalid
+            if (!validPaths.includes(path)) {
+                window.location.hash = '/home';
+                return;
+            }
+
+            // Show active section
             document.querySelectorAll('.page-section').forEach(section => {
                 section.classList.remove('active');
             });
-            // Add active class to target section
-            document.getElementById(pageId).classList.add('active');
-            // Scroll to top
+            const targetSection = document.getElementById(path);
+            if (targetSection) targetSection.classList.add('active');
+
+            // Close side nav on mobile after navigation
+            closeSideNav();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Log for simulation (e.g., wasinthra.com/about-us)
-            console.log("URL Simulation: wasinthra.com/" + (pageId === 'home' ? '' : pageId));
         }
+
+        // --- Mobile Menu Toggle Logic ---
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const sideNav = document.getElementById('side-nav');
+        const navOverlay = document.getElementById('nav-overlay');
+        const closeBtn = document.getElementById('close-btn');
+
+        function openSideNav() {
+            sideNav.classList.add('active');
+            navOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeSideNav() {
+            sideNav.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileToggle.addEventListener('click', openSideNav);
+        closeBtn.addEventListener('click', closeSideNav);
+        navOverlay.addEventListener('click', closeSideNav);
+
+        // Listen for hash changes
+        window.addEventListener('hashchange', router);
+        // Initial load
+        window.addEventListener('load', router);
     </script>
 </body>
 </html>
-
 
